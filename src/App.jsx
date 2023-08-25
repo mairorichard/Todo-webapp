@@ -6,14 +6,7 @@ import Del from "./assets/images/icon-cross.svg";
 import ToDo from "./todo";
 
 function App() {
-  const [toDoList, setToDoList] = useState([
-    { text: "Start a book", completed: true },
-    { text: "Start a book", completed: true },
-    { text: "Start a book", completed: true },
-    { text: "Start a book", completed: true },
-    { text: "Start a book", completed: true },
-    { text: "Start a book", completed: true },
-  ]);
+  const [toDoList, setToDoList] = useState([]);
 
   const [todoText, setTodoText] = useState("");
 

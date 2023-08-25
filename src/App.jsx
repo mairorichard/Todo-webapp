@@ -12,6 +12,7 @@ function App() {
     { text: "Start a book", completed: true },
     { text: "Start a book", completed: true },
     { text: "Start a book", completed: true },
+    { text: "Start a book", completed: true },
   ]);
 
   const [todoText, setTodoText] = useState("");
@@ -37,7 +38,7 @@ function App() {
   };
 
   return (
-    <div className="bg-verydarkgrayblue md:h-[100vh] h-full flex flex-col items-center">
+    <div className="bg-verydarkgrayblue h-[100vh] flex flex-col items-center">
       {/* top image */}
       <div className="bg-cover bg-center">
         <img src={Bgdesktop} alt="" />
@@ -84,7 +85,7 @@ function App() {
         {/* todo list */}
 
         <div className="py-4 bg-darkgrayblue2 mt-8 rounded-md shadow-2xl ">
-          <div className="flex flex-col gap-4 h-[20rem] overflow-y-scroll">
+          <div className="flex flex-col gap-4 max-h-[16rem] overflow-y-scroll">
             {toDoList.map((item, index) => {
               return (
                 <div className="flex flex-col" key={index}>

@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import Check from "./assets/images/icon-check.svg";
 import Bgdesktop from "./assets/images/bg-desktop-dark.jpg";
+import Bgdesktoplight from "./assets/images/bg-desktop-light.jpg";
 import Sun from "./assets/images/icon-sun.svg";
+import Moon from "./assets/images/icon-moon.svg";
 import Del from "./assets/images/icon-cross.svg";
 import ToDo from "./todo";
 
@@ -9,6 +11,12 @@ function App() {
   const [toDoList, setToDoList] = useState([]);
 
   const [todoText, setTodoText] = useState("");
+
+  const [filter, setFilter] = useState(null);
+
+  const [active, setActive] = useState("all");
+
+  const [dark, setDark] = useState(true);
 
   const addToDo = () => {
     if (todoText.trim() === "") {
@@ -30,21 +38,47 @@ function App() {
     setToDoList(updatedTodos);
   };
 
+  const filteredTodos = toDoList.filter((todo) => {
+    if (filter === true) return todo.completed;
+    if (filter === false) return !todo.completed;
+    return true; // 'all' filter, include all todos
+  });
+
+  const clearCompletedTodos = () => {
+    const uncompletedTodos = toDoList.filter((todo) => !todo.completed);
+    setToDoList(uncompletedTodos);
+    alert("All completed ToDos have been cleared");
+  };
+
+  const toggleDarkMode = () => {
+    setDark((prev) => !prev);
+  };
+
   return (
-    <div className="bg-verydarkgrayblue h-[100vh] flex flex-col items-center">
+    <div
+      className={`${
+        dark ? "bg-verydarkgrayblue" : "bg-lightbg"
+      } h-[100vh] flex flex-col items-center`}
+    >
       {/* top image */}
       <div className="bg-cover bg-center">
-        <img src={Bgdesktop} alt="" />
+        {dark ? (
+          <img src={Bgdesktop} alt="" />
+        ) : (
+          <img src={Bgdesktoplight} alt="" />
+        )}
       </div>
 
       {/* /top image */}
 
       <div className="lg:mt-[-16rem]  md:w-[40%] flex flex-col mx-5">
         {/* top */}
-        <div className="text-white flex items-center justify-between">
+        <div className={`text-white flex items-center justify-between`}>
           <h1 className="text-4xl font-semibold tracking-[1rem]">TODO</h1>
-          <div className="">
-            <img src={Sun} alt="" />
+
+          {/* toggle dark mode */}
+          <div className="cursor-pointer" onClick={toggleDarkMode}>
+            {dark ? <img src={Sun} alt="" /> : <img src={Moon} alt="" />}
           </div>
         </div>
 
@@ -52,7 +86,11 @@ function App() {
 
         {/* create new todo */}
 
-        <div className="flex px-6 py-4 bg-darkgrayblue2 items-center gap-5 mt-5 rounded-md shadow-2xl">
+        <div
+          className={`flex px-6 py-4 ${
+            dark ? "bg-darkgrayblue2" : "bg-verylightgray"
+          } items-center gap-5 mt-5 rounded-md shadow-2xl`}
+        >
           {/* check box */}
           <div
             className="h-6 w-6 border border-brightblue rounded-full cursor-pointer"
@@ -66,7 +104,9 @@ function App() {
               name="todo"
               id="todo"
               placeholder="Create new Todo"
-              className="w-full bg-transparent text-white sm:text-sm focus:outline-none"
+              className={`w-full bg-transparent ${
+                dark ? "text-white" : "text-slate-700"
+              } sm:text-sm focus:outline-none`}
               onChange={(e) => setTodoText(e.target.value)}
               value={todoText}
             />
@@ -77,9 +117,13 @@ function App() {
 
         {/* todo list */}
 
-        <div className="py-4 bg-darkgrayblue2 mt-8 rounded-md shadow-2xl ">
+        <div
+          className={`py-4 ${
+            dark ? "bg-darkgrayblue2" : "bg-verylightgray"
+          } mt-8 rounded-md shadow-2xl`}
+        >
           <div className="flex flex-col gap-4 max-h-[16rem] overflow-y-scroll">
-            {toDoList.map((item, index) => {
+            {filteredTodos.map((item, index) => {
               return (
                 <div className="flex flex-col" key={index}>
                   <div className="flex items-center gap-5 px-6">
@@ -87,10 +131,14 @@ function App() {
                     {/* check box */}
                     <div className="">
                       <div
-                        className={`h-6 w-6 border border-brightblue rounded-full cursor-pointer flex items-center justify-center `}
+                        className={`h-6 w-6 border border-brightblue rounded-full cursor-pointer flex items-center justify-center ${
+                          item.completed ? "bg-brightblue" : ""
+                        }`}
                         onClick={() => toggleTodo(index)}
                       >
-                        <div className="hidden">
+                        <div
+                          className={`${item.completed ? "block" : "hidden"}`}
+                        >
                           <img src={Check} alt="" />
                         </div>
                       </div>
@@ -101,8 +149,12 @@ function App() {
                       {/* todo */}
                       <div className="w-full">
                         <p
-                          className={`text-white ${
-                            toDoList.completed ? "line-through" : ""
+                          className={`${
+                            dark && !item.completed
+                              ? "text-white"
+                              : "text-slate-600"
+                          } ${
+                            item.completed ? "line-through text-slate-500" : ""
                           }`}
                         >
                           {item.text}
@@ -118,7 +170,11 @@ function App() {
                   </div>
 
                   {/* Line */}
-                  <div className="h-[1px] w-full bg-slate-600 my-4"></div>
+                  <div
+                    className={`h-[1px] w-full ${
+                      dark ? "bg-slate-600" : "bg-slate-300"
+                    } my-4`}
+                  ></div>
                 </div>
               );
             })}
@@ -129,20 +185,62 @@ function App() {
             {/* items left */}
             <div className="">
               <p>
-                {toDoList.length} {toDoList.length <= 1 ? "item" : "items"} left
+                {filteredTodos.length} {toDoList.length <= 1 ? "item" : "items"}{" "}
+                left
               </p>
             </div>
 
             {/* states */}
-            <div className="font-medium flex gap-2">
-              <span className="text-brightblue">All</span>
-              <span>Active</span>
-              <span>Completed</span>
+            <div className="cursor-pointer flex gap-2">
+              <span
+                className={`${
+                  active === "all"
+                    ? "text-brightblue font-medium"
+                    : "hover:text-slate-300"
+                } `}
+                onClick={() => {
+                  setFilter(null);
+                  setActive("all");
+                }}
+              >
+                All
+              </span>
+              <span
+                onClick={() => {
+                  setFilter(false);
+                  setActive("active");
+                }}
+                className={`${
+                  active === "active"
+                    ? "text-brightblue font-medium"
+                    : "hover:text-slate-300"
+                }`}
+              >
+                Active
+              </span>
+              <span
+                className={`${
+                  active === "completed"
+                    ? "text-brightblue font-medium"
+                    : "hover:text-slate-300"
+                }`}
+                onClick={() => {
+                  setFilter(true);
+                  setActive("completed");
+                }}
+              >
+                Completed
+              </span>
             </div>
 
             {/* clear */}
             <div className="">
-              <span>Clear Completed</span>
+              <span
+                className="hover:text-slate-300 cursor-pointer"
+                onClick={clearCompletedTodos}
+              >
+                Clear Completed
+              </span>
             </div>
           </div>
         </div>

@@ -181,7 +181,7 @@ function App() {
           </div>
 
           {/* Bottom */}
-          <div className="px-6 text-slate-500 text-sm flex justify-between items-center">
+          <div className="px-6 text-slate-500 text-sm flex flex-wrap justify-between items-center">
             {/* items left */}
             <div className="">
               <p>
